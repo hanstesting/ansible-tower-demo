@@ -1,2 +1,67 @@
 ---
 - name: Administrando VM's por medio de uso de CPU
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Creando el grupo de recursos
+      azure_rm_resourcegroup:
+        name: cpu-test-group
+        location: eastus
+    
+    - name: Creando un virtual subnet
+      azure_rm_virtualnetwork:
+        name: ansible-rhel-vnet
+        resource_group: cpu-test-group
+        address_prefix_cidr: "10.1.0.0/24"
+    
+    - name: Crear el virtual subnet 
+      azure_rm_subnet:
+        name: ansible-rhel-subnet
+        resource_group: cpu-test-group
+        address_prefix_cidr: "10.1.0.0/24"
+
+    - name: Crear una dirección IP pública
+      azure_rm_publicipaddress:
+        name: ansible-rhel-ip
+        resource_group: cpu-test-group
+        allocation_method: Static
+      register: ansible_rhel_ip
+
+    - name: Crear grupo de seguridad para habilitar acceso por medio de SSH
+      azure_rm_securitygroup:
+        name: ansible-rhel-sg
+        resource_group: cpu-test-group
+        purge_rules: yes
+        rules:
+          - name: 'AllowSSH'
+            protocol: Tcp
+            source_address_prefix:
+              - '0.0.0.0/0'
+            destination_port_range: 22
+            access: Allow
+            priority: 100
+            direction: Inbound
+
+     - name: Crear la interfaz del virtual network
+       azure_rm_networkinterface:
+         name: ansible-rhel-nic
+         resource_group: cpu-test-group
+         virtual_network: ansible-rhel-vn
+         subnet: ansible-rhel-subnet
+         public_ip_name: ansible-rhel-ip
+         security_group: ansible-rhel-sg
+
+     - name: Crear la máquina virtual
+       azure_rm_virtualmachine:
+         name: RHEL8
+         resource_group: cpu-test-group
+         admin_username: hansgbm
+         admin_password: gbmguatemala
+         vm_size:
+         network_interfaces: ansible-rhel-nic
+         image:
+           offer: "RHEL"
+           publisher: "RedHat"
+           sku: "8"
+           version: "latest"
+

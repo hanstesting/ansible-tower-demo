@@ -1,2 +1,2 @@
 # ansible-tower-demo
-Ansible Tower demonstration with Windows
+Ansible Tower demonstration with Azure

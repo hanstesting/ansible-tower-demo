@@ -1,0 +1,76 @@
+---
+- name: Creación de grupo de recursos, virtual network y el loadbalancer
+  hosts: localhost
+  connection: local    
+  tasks:
+    - name: Incluir el archivo de variables
+      include_vars:
+        file: vars/variables.yml
+
+    - name: Creando el grupo de recursos
+      azure_rm_resourcegroup:
+        name: "{{ resource_group }}"
+        location: "{{ location }}"
+
+    - name: Creando un virtual network
+      azure_rm_virtualnetwork:
+        name: "{{ vmss_name }}"
+        resource_group: "{{ resource_group }}"
+        address_prefixes: "10.1.0.0/16"
+    
+    - name: Crear el virtual subnet 
+      azure_rm_subnet:
+        name: "{{ vmss_name }}"
+        resource_group: "{{ resource_group }}"
+        address_prefixes: "10.1.0.0/24"
+        virtual_network: "{{ vmss_name }}"
+
+    - name: Crear una dirección IP pública
+      azure_rm_publicipaddress:
+        name: "{{ vmss_name }}"
+        resource_group: "{{ resource_group }}"
+        allocation_method: Static
+
+    - name: Crear grupo de seguridad para habilitar acceso por medio de SSH
+      azure_rm_securitygroup:
+        name: "{{ vmss_name }}"
+        resource_group: "{{ resource_group }}"
+        rules:
+          - name: SSH
+            protocol: Tcp
+            destination_port_range: 22
+            access: Allow
+            priority: 1001
+            direction: Inbound
+
+    - name: Crear un load balancer 
+      azure_rm_loadbalancer:
+        resource_group: "{{ resource_group }}"
+        name: "{{ vmss_name }}lb"
+        location: "{{ location }}"
+        frontend_ip_configurations:
+          - name: "{{ vmss_name }}front-config"
+            public_ip_address: "{{ vmss_name }}"
+        backend_address_pools:
+          - name: "{{ vmss_name }}backend-pool"
+        probes:
+          - name: "{{ vmss_name }}prob0"
+            port: 8080
+            interval: 10
+            fail_count: 3
+        inbound_nat_pools:
+          - name: "{{ vmss_name }}nat-pool"
+            frontend_ip_configuration_name: "{{ vmss_name }}front-config"
+            protocol: Tcp
+            frontend_port_range_start: 50000
+            frontend_port_range_end: 50040
+            backend_port: 22
+        load_balancing_rules:
+          - name: "{{ vmss_name }}lbs-rules"
+            frontend_ip_configuration: "{{ vmss_name }}front-config"
+            backend_address_pool: "{{ vmss_name }}backend-pool"
+            frontend_port: 80
+            backend_port: 8080
+            load_distribution: Default
+            probe: "{{ vmss_name }}prob0"
+...

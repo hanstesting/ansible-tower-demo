@@ -1,0 +1,9 @@
+resource_group: rhelgroup
+vmss_lb_name: myScaleSetLb
+vmss_name: rhelSS
+name: autoscalesetting
+location: eastus
+admin_username: azureuser
+admin_password: gbmgt123
+namespacename: eventhubsnamesansible
+eventhubname: eventhubsansible

@@ -1,7 +1,6 @@
 ---
 - name: Creación de grupo de recursos, virtual network y el loadbalancer
   hosts: localhost
-  connection: local    
   tasks:
     - name: Incluir el archivo de variables
       include_vars:

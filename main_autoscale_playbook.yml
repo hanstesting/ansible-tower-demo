@@ -1,0 +1,53 @@
+---
+- hosts: localhost
+  tasks:
+  - name: Incluir variables del archivo
+    include_vars: vars/variables.yml
+  
+  - name: Creando recursos previos de resource group, lb y virtualnetwork
+    include_tasks: network_playbook.yml
+
+  - name: Creando recursos previos virtual machine scale set
+    include_tasks: vmss_playbook.yml
+
+  - name: Get facts of the resource group
+    azure_rm_resourcegroup_facts:
+      name: "{{ resource_group }}"
+    register: rg
+
+  - name: Get scale set resource uri
+    set_fact:
+      vmss_id: "{{ rg.ansible_facts.azure_resourcegroups[0].id }}/providers/Microsoft.Compute/virtualMachineScaleSets/{{ vmss_name }}"
+    
+  - name: Create autoscaling
+    azure_rm_autoscale:
+      resource_group: "{{ resource_group }}"
+      name: "{{ name }}"
+      target: "{{ vmss_id }}"
+      enabled: true
+      profiles:
+        rules:
+          - cooldown: 5
+            direction: Increase
+            metric_name: Percentage CPU
+            metric_resource_uri: "{{ vmss_id }}"
+            operator: GreaterThan
+            statistic: Average
+            threshold: 50
+            time_aggregation: Average
+            time_grain: 1
+            time_window: 10
+            type: ChangeCount
+            value: '1'
+          - cooldown: 5
+            direction: Decrease
+            metric_name: Percentage CPU
+            metric_resource_uri: "{{ vmss_id }}"
+            operator: LessThan
+            statistic: Average
+            threshold: 50
+            time_aggregation: Average
+            time_grain: 1
+            time_window: 10
+            type: ChangeCount
+            value: '1'

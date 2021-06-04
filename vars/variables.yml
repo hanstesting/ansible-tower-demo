@@ -7,3 +7,4 @@ admin_username: azureuser
 admin_password: gbmgt123
 namespacename: eventhubsnamesansible
 eventhubname: eventhubsansible
+vmss_password: gbmGT123!

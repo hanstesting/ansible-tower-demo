@@ -21,7 +21,7 @@
       azure_rm_subnet:
         name: "{{ vmss_name }}"
         resource_group: "{{ resource_group }}"
-        address_prefixes: "10.1.0.0/24"
+        address_prefix_cidr: "10.1.0.0/24"
         virtual_network: "{{ vmss_name }}"
 
     - name: Crear una dirección IP pública

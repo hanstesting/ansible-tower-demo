@@ -2,23 +2,18 @@
 - hosts: localhost
   tasks:
   - name: Incluir variables del archivo
-    include_vars: vars/variables.yml
-  
-  - name: Creando recursos previos de resource group, lb y virtualnetwork
-    include_tasks: network_playbook.yml
-
-  - name: Creando recursos previos virtual machine scale set
-    include_tasks: vmss_playbook.yml
+    include_vars: 
+      file: vars/variables.yml
 
   - name: Get facts of the resource group
-    azure_rm_resourcegroup_facts:
+    azure_rm_resourcegroup_info:
       name: "{{ resource_group }}"
     register: rg
 
   - name: Get scale set resource uri
     set_fact:
-      vmss_id: "{{ rg.ansible_facts.azure_resourcegroups[0].id }}/providers/Microsoft.Compute/virtualMachineScaleSets/{{ vmss_name }}"
-    
+      vmss_id: "{{ rg.resourcegroups[0]['id'] }}/providers/Microsoft.Compute/virtualMachineScaleSets/{{ vmss_name }}" 
+
   - name: Create autoscaling
     azure_rm_autoscale:
       resource_group: "{{ resource_group }}"
@@ -26,6 +21,13 @@
       target: "{{ vmss_id }}"
       enabled: true
       profiles:
+      - count: '2'
+        max_count: '5'
+        min_count: '2'
+        name: 'This scale condition is executed when none of the other scale condition(s) match'
+        fixed_date_start: "2021-06-03T00:00:00"
+        fixed_date_end: "2021-06-30T00:00:00" 
+        recurrence_timezone: Pacific Standard Time
         rules:
           - cooldown: 5
             direction: Increase

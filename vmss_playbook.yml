@@ -1,8 +1,5 @@
 - hosts: localhost
   tasks:
-    - name: Incluir el archivo de variables
-      include_vars:
-        file: vars/variables.yml
     - name: Create a scale set
       azure_rm_virtualmachinescaleset:
         resource_group: "{{ resource_group }}"

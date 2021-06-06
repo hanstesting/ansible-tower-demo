@@ -4,21 +4,21 @@
       azure_rm_virtualmachinescaleset:
         resource_group: "{{ resource_group }}"
         name: "{{ vmss_name }}"
-        vm_size: Standard_DS1_v2
+        vm_size: Standard_DS1_v2 # poner variable de size con las mas baratas... 3 opciones
         admin_username: "{{ admin_username }}"
         admin_password: "{{ vmss_password }}"
         ssh_password_enabled: True
-        capacity: 2
+        capacity: 2 # poner variable con limite de 4
         virtual_network_name: "{{ vmss_name }}"
         subnet_name: "{{ vmss_name }}"
-        upgrade_policy: Manual
+        upgrade_policy: Manual #investigar upgrade policy
         tier: Standard
         managed_disk_type: Standard_LRS
         os_disk_caching: ReadWrite
         image:
-          offer: UbuntuServer
+          offer: UbuntuServer #dejarlo en ubuntu
           publisher: Canonical
-          sku: 16.04-LTS
-          version: latest
+          sku: 16.04-LTS #dar opcion de version, 20.04, 20.10
+          version: latest #investigar
           resource_group: "{{ resource_group }}"
         load_balancer: "{{ vmss_name }}lb"

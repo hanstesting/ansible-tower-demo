@@ -1,10 +1,18 @@
 ---
 - hosts: localhost
   tasks:
+  - name: Include vars
+    include_vars:
+      file: variables.yml
+
   - name: Get facts of the resource group
     azure_rm_resourcegroup_info:
       name: "{{ resource_group }}"
     register: rg
+
+  - name: Debugging
+    debug:
+      msg: '{{ rg.resourcegroups | selectattr("name", "{{ resource_group }}") | list }}' # buscar 
 
   - name: Get scale set resource uri
     set_fact:
@@ -31,7 +39,7 @@
             metric_resource_uri: "{{ vmss_id }}"
             operator: GreaterThan
             statistic: Average
-            threshold: 50
+            threshold: 50 # con variable
             time_aggregation: Average
             time_grain: 1
             time_window: 10
@@ -43,7 +51,7 @@
             metric_resource_uri: "{{ vmss_id }}"
             operator: LessThan
             statistic: Average
-            threshold: 50
+            threshold: 50 #con variables
             time_aggregation: Average
             time_grain: 1
             time_window: 10

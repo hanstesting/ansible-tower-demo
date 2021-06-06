@@ -1,0 +1,7 @@
+- name: Checking
+  hosts: localhost
+  tasks:
+  - name: Get facts of the resource group
+    azure_rm_resourcegroup_info:
+      name: "rhelgroup"
+    register: rg

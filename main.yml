@@ -1,6 +1,6 @@
 ---
 - name: Creación de grupo de recursos, virtual network y el loadbalancer
-  hosts: localhost
+  hosts: all
   tasks:
     - name: Creando el grupo de recursos
       azure_rm_resourcegroup:
@@ -90,5 +90,5 @@
   import_playbook: vmss_playbook.yml
 
 - name: Creando el auto scale con las condiciones brindadas
-  import_playbook: main_autoscale_playbook.yml
+  import_playbook: autoscale_playbook.yml
 ...

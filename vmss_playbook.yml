@@ -4,11 +4,11 @@
       azure_rm_virtualmachinescaleset:
         resource_group: "{{ resource_group }}"
         name: "{{ vmss_name }}"
-        vm_size: Standard_DS1_v2 # poner variable de size con las mas baratas... 3 opciones
+        vm_size: "{{ vm_size_option }}" #Standard_DS1_v2 default, poner variable de size con las mas baratas... 3 opciones
         admin_username: "{{ admin_username }}"
         admin_password: "{{ vmss_password }}"
         ssh_password_enabled: True
-        capacity: 2 # poner variable con limite de 4
+        capacity: "{{ vm_capacity }}" # default 2,  poner variable con limite de 4
         virtual_network_name: "{{ vmss_name }}"
         subnet_name: "{{ vmss_name }}"
         upgrade_policy: Manual #investigar upgrade policy

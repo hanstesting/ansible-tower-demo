@@ -1,0 +1,15 @@
+resource_group: rhelgroup
+vmss_lb_name: myScaleSetLb
+vmss_name: rhelSS
+autoscale_name: autoscalesetting
+location: eastus
+admin_username: azureuser
+admin_password: gbmgt123
+vmss_password: gbmGT123!
+vn_address_var: 10.1.0.0/16
+subnet_address_var: 10.1.0.0/24
+vm_size_option: Standard_DS1_v2
+vm_capacity: 2
+policy_var: Manual
+sku_var: 16.04-LTS
+threshold_var: 50

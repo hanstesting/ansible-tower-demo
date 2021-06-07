@@ -8,12 +8,12 @@
 
   - name: Get scale set resource uri
     set_fact:
-      vmss_id: "{{ rg.resourcegroups[0]['id'] }}/providers/Microsoft.Compute/virtualMachineScaleSets/{{ vmss_name }}"
+      vmss_id: "{{ rg.resourcegroups[0].id }}/providers/Microsoft.Compute/virtualMachineScaleSets/{{ vmss_name }}"
 
   - name: Create autoscaling
     azure_rm_autoscale:
       resource_group: "{{ resource_group }}"
-      name: "{{ name }}"
+      name: "{{ autoscale_name }}"
       target: "{{ vmss_id }}"
       enabled: true
       profiles:
@@ -29,9 +29,9 @@
             direction: Increase
             metric_name: Percentage CPU
             metric_resource_uri: "{{ vmss_id }}"
-            operator: GreaterThan
+            operator: GreaterThanOrEqualTo
             statistic: Average
-            threshold: 50
+            threshold: "{{ threshold_var }}"
             time_aggregation: Average
             time_grain: 1
             time_window: 10
@@ -43,7 +43,7 @@
             metric_resource_uri: "{{ vmss_id }}"
             operator: LessThan
             statistic: Average
-            threshold: 50
+            threshold: "{{ threshold_var }}"
             time_aggregation: Average
             time_grain: 1
             time_window: 10

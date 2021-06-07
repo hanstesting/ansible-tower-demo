@@ -29,7 +29,7 @@
             direction: Increase
             metric_name: Percentage CPU
             metric_resource_uri: "{{ vmss_id }}"
-            operator: GreaterThanOrEqualTo
+            operator: GreaterThanOrEqual
             statistic: Average
             threshold: "{{ threshold_var }}"
             time_aggregation: Average

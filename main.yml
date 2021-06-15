@@ -1,7 +1,10 @@
 ---
 - name: Creación de grupo de recursos, virtual network y el loadbalancer
-  hosts: all
+  hosts: localhost
   tasks:
+    - name: Include variables
+      include_vars:
+        file: variables.yml
     - name: Creando el grupo de recursos
       azure_rm_resourcegroup:
         name: "{{ resource_group }}"

@@ -1,1 +1,4 @@
 localhost ansible_python_interpreter=/usr/bin/python3.8 ansible_connection=local
+
+[windows_hosts]
+20.85.240.25 ansible_user=azureuser ansible_password=gbmGT123!

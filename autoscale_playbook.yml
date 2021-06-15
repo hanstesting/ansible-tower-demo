@@ -1,6 +1,10 @@
 ---
 - hosts: localhost
   tasks:
+  - name: Include variables file
+    include_vars:
+      file: variables.yml
+
   - name: Get facts of the resource group
     azure_rm_resourcegroup_info:
       name: "{{ resource_group }}"
@@ -25,7 +29,7 @@
         fixed_date_end: "2021-06-30T00:00:00" 
         recurrence_timezone: Pacific Standard Time
         rules:
-          - cooldown: 5
+          - cooldown: 1
             direction: Increase
             metric_name: Percentage CPU
             metric_resource_uri: "{{ vmss_id }}"
@@ -34,10 +38,10 @@
             threshold: "{{ threshold_var }}"
             time_aggregation: Average
             time_grain: 1
-            time_window: 10
+            time_window: 5
             type: ChangeCount
             value: '1'
-          - cooldown: 5
+          - cooldown: 1
             direction: Decrease
             metric_name: Percentage CPU
             metric_resource_uri: "{{ vmss_id }}"
@@ -46,6 +50,6 @@
             threshold: "{{ threshold_var }}"
             time_aggregation: Average
             time_grain: 1
-            time_window: 10
+            time_window: 5
             type: ChangeCount
             value: '1'

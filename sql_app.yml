@@ -1,0 +1,35 @@
+- name: Preparar la aplicación para deployment
+  hosts: localhost
+  vars:
+    repo_url: https://github.com/Spring-Boot-Framework/Spring-Boot-Application-Template.git 
+    workspace: ~/src/project2
+
+  tasks:
+  - name: Git Clone el app de demonstración
+    git:
+      repo: "{{ repo_url }}"
+      dest: "{{ workspace }}"
+
+  - name: Modificar application-dev.properties para poder utilizar MySQL 
+    lineinfile:
+      path: "{{ workspace }}/src/main/resources/application-dev.properties"
+      regexp: "^spring.datasource.url"
+      line: "spring.datasource.url=jdbc:mysql://localhost:3306/sbat?useSSL=false&allowPublicKeyRetrieval=true"
+
+  - name: Agregando usuario 
+    lineinfile:
+      path: "{{ workspace }}/src/main/resources/application-dev.properties"
+      regexp: "^spring.datasource.username"
+      line: "spring.datasource.username=sbat"
+
+  - name: Agregando contraseña
+    lineinfile:
+      path: "{{ workspace }}/src/main/resources/application-dev.properties"
+      regexp: "^spring.datasource.password"
+      line: "spring.datasource.password=sbat"
+
+  - name: Build sample app
+    shell: mvn package chdir="{{ workspace }}/"
+
+- name: Importar los demás playbooks...
+  import_playbook: sample-app-setup-deploy.yml 

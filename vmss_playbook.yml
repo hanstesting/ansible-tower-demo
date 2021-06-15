@@ -15,6 +15,7 @@
         tier: Standard
         managed_disk_type: Standard_LRS
         os_disk_caching: ReadWrite
+        public_ip_per_vm: yes
         image:
           offer: UbuntuServer
           publisher: Canonical

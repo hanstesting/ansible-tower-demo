@@ -1,0 +1,34 @@
+- name: Obtener información de nuestro grupo de recursos
+  hosts: localhost
+  tasks:
+    - name: Incluir el archivo de variables
+      include_vars:
+        file: variables.yml
+
+    - name: Conseguiendo facts de todas las IP's públicas en el grupo de recursos
+      azure_rm_publicipaddress_info:
+        resource_group: "{{ resource_group }}"
+      register: output_ip_address
+    
+    - name: Obteniendo info del loadbalancer
+      azure_rm_loadbalancer_info:
+        resource_group: "{{ resource_group }}"
+        name: "{{ vmss_name }}lb"
+      register: output
+    
+    - name: Add all hosts
+      add_host:
+        groups: scalesethosts
+        hostname: "{{ output_ip_address.publicipaddresses[0].ip_address }}_{{ item.properties.frontendPort }}"
+        ansible_host: "{{ output_ip_address.publicipaddresses[0].ip_address }}"
+        ansible_port: "{{ item.properties.frontendPort }}"
+        ansible_ssh_user: "{{ admin_username }}"
+        ansible_ssh_pass: "{{ vmss_password }}"
+        ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
+      register: nice
+      with_items:
+        - "{{ output.ansible_info.azure_loadbalancers[0].properties.inboundNatRules }}"
+
+    - name: Checking variable nice
+      debug:
+        msg: "{{ nice }}"

@@ -20,6 +20,9 @@
       name: "{{ autoscale_name }}"
       target: "{{ vmss_id }}"
       enabled: true
+      notifications:
+        - custom_emails: hwalter@gbm.net
+        - send_to_subscription_administrator: yes
       profiles:
       - count: '2'
         max_count: '5'

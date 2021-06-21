@@ -1,5 +1,8 @@
 resource_group: rhelgroup
 vmss_name: rhelSS
+vmss_name_network: rhelSS
+vmss_name_subnet: rhelSS
+vmss_name_lb: rhelSSlb
 autoscale_name: autoscalesetting
 location: eastus
 admin_username: azureuser

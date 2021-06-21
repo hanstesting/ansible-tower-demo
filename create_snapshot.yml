@@ -18,4 +18,4 @@
         source: "{{ vm_testing_name }}"
 
 - name: Importando playbook para actualizar el VMSS... 
-  import_playbook: update_vmss.yml
+  import_playbook: vmss_update.yml

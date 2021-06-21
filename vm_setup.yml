@@ -37,6 +37,7 @@
 
     - name: Moviendo la aplicación al home directory...
       copy:
+        remote_src: yes
         src: "{{ workspace }}/target/spring-boot-application-template-latest.jar"
         dest: "/home/{{ admin_username }}/sample.jar"
         force: yes

@@ -10,6 +10,7 @@
 
 - name: Setting up SSH and stress modules
   hosts: scalesethosts
+  gather_facts: no
   become: yes
   vars:
     admin_username: azureuser

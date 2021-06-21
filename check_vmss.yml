@@ -6,17 +6,11 @@
         file: variables.yml
 
     - name: Recopilando información de VMSS...
-      azure_rm_virtualmachinescalesetinstance_info:
-        vmss_name: "{{ vmss_name }}"
+      azure_rm_virtualmachinescaleset_info:
+        name: "{{ vmss_name }}"
         resource_group: "{{ resource_group }}"
       register: resultado
     
-    - name: Obteniendo info de discos...
-      azure_rm_manageddisk_info:
-        managed_by: "{{ resultado['instances'][0]['vm_id'] }}"
-      register: disk_info
-
-    - name: Viendo disk_info...
+    - name: Viendo resultado...
       debug:
-        msg: "{{ disk_info }}"
-
+        msg: "{{ resultado['vmss'][0]['sku']['capacity'] }}"

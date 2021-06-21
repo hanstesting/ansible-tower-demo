@@ -25,4 +25,4 @@
         - git
 
     - name: Stress CPU over 50%
-      shell: stress --cpu 1 --timeout 900
+      shell: stress --cpu 1 --timeout 15m

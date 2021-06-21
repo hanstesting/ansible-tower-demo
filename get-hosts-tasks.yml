@@ -25,5 +25,6 @@
         ansible_ssh_user: "{{ admin_username }}"
         ansible_ssh_pass: "{{ vmss_password }}"
         ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
+        ansible_python_interpreter: '{{ ansible_playbook_python }}'
       with_items:
         - "{{ output.ansible_info.azure_loadbalancers[0].properties.inboundNatRules }}"

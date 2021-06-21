@@ -1,9 +1,11 @@
-- hosts: localhost
+- name: Actualizar datos del VMSS
+  hosts: localhost
   tasks:
-    - name: Incluir variables
+    - name: Incluir archivo de variables
       include_vars:
         file: variables.yml
-    - name: Create a scale set
+
+    - name: Actualizando imagen del VMSS...
       azure_rm_virtualmachinescaleset:
         resource_group: "{{ resource_group }}"
         name: "{{ vmss_name }}"
@@ -19,9 +21,18 @@
         managed_disk_type: Standard_LRS
         os_disk_caching: ReadWrite
         image:
-          offer: UbuntuServer
-          publisher: Canonical
-          sku: "{{ sku_var }}"
-          version: latest
+          name: "{{ custom_image_name }}"
           resource_group: "{{ resource_group }}"
         load_balancer: "{{ vmss_name }}lb"
+
+- name: Importando playbook para recopilar info de nuevos hosts...
+  import_playbook: get-hosts-tasks.yml
+
+- name: Correr la aplicación
+  hosts: scalesethosts
+  become: yes
+  tasks:
+    - name: Iniciar la aplicación...
+      shell: java -jar "/home/{{ admin_username }}/sample.jar" >/dev/null 2>&1 &
+      async: 5000
+      poll: 0

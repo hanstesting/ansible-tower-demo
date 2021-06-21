@@ -1,0 +1,44 @@
+- name: Preparar la aplicación para deployment
+  hosts: localhost
+
+- name: Incluir archivo de variables
+  include_vars:
+    file: variables.yml
+
+- name: Incluir playbook para obtener info del VMSS
+  import_playbook: get-hosts-tasks.yml
+
+- name: Haciendo setup la aplicación en las instancias nuevas...
+  hosts: scalesethosts
+  become: yes
+  vars:
+    workspace: ~/src/project2
+    admin_username: azureuser
+    repo_url: https://github.com/Spring-Boot-Framework/Spring-Boot-Application-Template.git 
+    workspace: ~/src/project2
+
+  tasks:
+    - name: Clonando el GIT del app de demonstración...
+      git:
+        repo: "{{ repo_url }}"
+        dest: "{{ workspace }}"
+  
+    - name: Construyendo la aplicación...
+      shell: mvn package chdir="{{ workspace }}/"
+
+    - name: Instalando JRE...
+      apt:
+        name: default-jre
+        update_cache: yes
+  
+    - name: Cambiando nombre de la aplicación...
+      copy:
+        src: "{{ workspace }}/target/spring-boot-application-template-latest.jar"
+        dest: "/home/{{ admin_username }}/sample.jar"
+        force: yes
+        mode: 0755
+  
+    - name: Iniciando la aplicación...
+      shell: java -jar "/home/{{ admin_username }}/sample.jar" >/dev/null 2>&1 &
+      async: 5000
+      poll: 0

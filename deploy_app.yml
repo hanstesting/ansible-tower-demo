@@ -1,0 +1,10 @@
+- name: Include a play after another play
+  import_playbook: get-hosts-tasks.yml
+
+- name: Correr aplicación java en servidores
+  hosts: localhost
+  tasks:
+    - name: Iniciando la aplicación...
+      shell: java -jar "/home/{{ admin_username }}/sample.jar" >/dev/null 2>&1 &
+      async: 5000
+      poll: 0

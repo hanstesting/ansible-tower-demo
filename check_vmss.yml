@@ -1,0 +1,22 @@
+- name: Obtener información de nuestro grupo de recursos
+  hosts: localhost
+  tasks:
+    - name: Incluir el archivo de variables
+      include_vars:
+        file: variables.yml
+
+    - name: Recopilando información de VMSS...
+      azure_rm_virtualmachinescalesetinstance_info:
+        vmss_name: "{{ vmss_name }}"
+        resource_group: "{{ resource_group }}"
+      register: resultado
+    
+    - name: Obteniendo info de discos...
+      azure_rm_manageddisk_info:
+        managed_by: "{{ resultado['instances'][0]['vm_id'] }}"
+      register: disk_info
+
+    - name: Viendo disk_info...
+      debug:
+        msg: "{{ disk_info }}"
+

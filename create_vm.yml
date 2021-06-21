@@ -1,21 +1,18 @@
-- hosts: localhost
+- name: Setup completo del VM con la aplicación base
+  hosts: localhost
   tasks:
     - name: Incluir variables
       include_vars:
         file: variables.yml
-    - name: Create a scale set
-      azure_rm_virtualmachinescaleset:
+
+    - name: Creando VM...
+      azure_rm_virtualmachine:
         resource_group: "{{ resource_group }}"
-        name: "{{ vmss_name }}"
+        name: "{{ vm_testing_name }}"
         vm_size: "{{ vm_size_option }}"
         admin_username: "{{ admin_username }}"
         admin_password: "{{ vmss_password }}"
         ssh_password_enabled: True
-        capacity: "{{ vm_capacity }}"
-        virtual_network_name: "{{ vmss_name }}"
-        subnet_name: "{{ vmss_name }}"
-        upgrade_policy: "{{ policy_var }}"
-        tier: Standard
         managed_disk_type: Standard_LRS
         os_disk_caching: ReadWrite
         image:
@@ -23,5 +20,6 @@
           publisher: Canonical
           sku: "{{ sku_var }}"
           version: latest
-          resource_group: "{{ resource_group }}"
-        load_balancer: "{{ vmss_name }}lb"
+
+- name: Importando el playbook para hacer deploy el app...
+  import_playbook: vm_setup.yml

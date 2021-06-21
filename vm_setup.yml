@@ -1,0 +1,43 @@
+- name: Descarga y build de aplicación de demonstración
+  hosts: windows_hosts
+  become: yes
+  tasks: 
+    - name: Incluir variables
+      include_vars:
+        file: variables.yml
+
+    - name: Clonando el repositorio Git del app de demonstración...
+      git:
+        repo: "{{ repo_url }}"
+        dest: "{{ workspace }}"
+
+    - name: Actualizando Ubuntu...
+      shell: "{{ item }}"
+      with_items:
+        - sudo apt-get install software-properties-common
+        - sudo apt-add-repository universe
+        - sudo apt-get update
+
+    - name: Instalando JRE, JDK y maven...
+      apt:
+        name: "{{ item }}"
+        update_cache: yes
+      with_items:
+        - maven
+        - default-jre
+        - default-jdk
+
+    - name: Instalando el paquete stress para pruebas con CPU...
+      package:
+        name: stress
+        state: present
+
+    - name: Construyendo el app de muestra...
+      shell: mvn package chdir="{{ workspace }}/"
+
+    - name: Moviendo la aplicación al home directory...
+      copy:
+        src: "{{ workspace }}/target/spring-boot-application-template-latest.jar"
+        dest: "/home/{{ admin_username }}/sample.jar"
+        force: yes
+        mode: 0755

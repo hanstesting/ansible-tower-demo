@@ -25,10 +25,5 @@
         ansible_ssh_user: "{{ admin_username }}"
         ansible_ssh_pass: "{{ vmss_password }}"
         ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
-      register: nice
       with_items:
         - "{{ output.ansible_info.azure_loadbalancers[0].properties.inboundNatRules }}"
-
-    - name: Checking variable nice
-      debug:
-        msg: "{{ nice }}"

@@ -1,0 +1,21 @@
+- name: Crear una imagen personalizada del VM
+  hosts: localhost
+  tasks:
+    - name: Incluir archivo de variables
+      include_vars:
+        file: variables.yml
+
+    - name: Parando y generalizando el VM...
+      azure_rm_virtualmachine:
+        resource_group: "{{ resource_group }}"
+        name: "{{ vm_testing_name }}"
+        generalized: yes
+
+    - name: Crear una imagen personalizada del VM
+      azure_rm_image:
+        name: "{{ custom_image_name }}"
+        resource_group: "{{ resource_group }}"
+        source: "{{ vm_testing_name }}"
+
+- name: Importando playbook para actualizar el VMSS... 
+  import_playbook: update_vmss.yml

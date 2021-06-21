@@ -13,5 +13,8 @@
   - name: Build sample app
     shell: mvn package chdir="{{ workspace }}/"
 
+- name: Importar playbook para la creación de un testing VM...
+  import_playbook: create_vm.yml
+
 - name: Importar los demás playbooks...
   import_playbook: sample-app-setup-deploy.yml 

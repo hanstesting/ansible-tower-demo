@@ -22,6 +22,7 @@
       with_items:
         - ssh
         - stress
+        - git
 
     - name: Stress CPU over 50%
       shell: stress --cpu 1

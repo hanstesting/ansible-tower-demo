@@ -1,0 +1,21 @@
+- name: Obtener información de nuestro grupo de recursos
+  hosts: localhost
+  tasks:
+    - name: Incluir el archivo de variables
+      include_vars:
+        file: variables.yml
+
+    - name: Conseguiendo facts de todas las IP's públicas en el grupo de recursos
+      azure_rm_publicipaddress_info:
+        resource_group: "{{ resource_group }}"
+      register: output_ip_address
+    
+    - name: Obteniendo info del loadbalancer
+      azure_rm_loadbalancer_info:
+        resource_group: "{{ resource_group }}"
+        name: "{{ vmss_name }}lb"
+      register: output
+    
+    - name: Revisando información
+      debug:
+        msg: "{{ output.ansible_info.azure_loadbalancers[0].properties.inboundNatRules }}"

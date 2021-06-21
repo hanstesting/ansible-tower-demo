@@ -8,7 +8,15 @@ vmss_password: gbmGT123!
 vn_address_var: "10.1.0.0/16"
 subnet_address_var: "10.1.0.0/24"
 vm_size_option: "Standard_DS1_v2"
-policy_var: Manual
+policy_var: Automatic
 sku_var: 16.04-LTS 
 threshold_var: 50 
 vm_capacity: 2
+custom_instance: rhelSS_1
+custom_os: Linux
+custom_os_type: linux
+managed_disk_name: AppDisk
+vm_testing_name: UbuntuTestVM
+repo_url: https://github.com/Spring-Boot-Framework/Spring-Boot-Application-Template.git 
+workspace: ~/src/project2
+custom_image_name: CustomImageApp

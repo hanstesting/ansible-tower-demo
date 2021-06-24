@@ -5,6 +5,10 @@
       include_vars:
         file: variables.yml
 
+    - name: Esperar a que se creen las instancias en Azure...
+      pause:
+        minutes: 7
+
     - name: Parando y generalizando el VM...
       azure_rm_virtualmachine:
         resource_group: "{{ resource_group }}"
